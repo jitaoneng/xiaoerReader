@@ -3,7 +3,6 @@ import {Layout, Icon, Spin, Button, Tag, message, Modal} from 'antd';
 import { Link } from 'react-router-dom';
 import styles from './bookIntroduce.css';
 import randomcolor from 'randomcolor';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import {
     time2Str,
     url2Real,
@@ -23,11 +22,9 @@ class BookIntroduce extends React.Component{
             save:false,
             data:{}
         };
-        this.share='';
         message.config({top:500,duration:2});
-        this.flag = false;
 
-        this.addBook = (flag)=>{
+        this.addBook = ()=>{
             let dataIntroduce = this.state.data;
             fetch(`/api/toc?view=summary&book=${this.state.data._id}`)
                 .then(res=>res.json())
@@ -46,38 +43,35 @@ class BookIntroduce extends React.Component{
                     data.readIndex = 0;
                     dataIntroduce.list = data;
                     let localList = store.get('bookList')||[];
-                    let localBookIdList = store.get('bookIdList')||[];
-                    let localIdList = new Set(localBookIdList);
-                    if(localIdList.has(dataIntroduce._id)){
+                    let localIdList = store.get('bookIdList')||[];
+                    if(localIdList.indexOf(dataIntroduce._id)!==-1){
                         message.info('书籍已在书架中');return;
                     }
                     localList.unshift(dataIntroduce);
-                    localIdList.add(dataIntroduce._id);
+                    localIdList.unshift(dataIntroduce._id);
                     store.set('bookList',localList);
-                    store.set('bookIdList',Array.from(localIdList));
+                    store.set('bookIdList',localIdList);
                     message.info(`《${this.state.data.title}》加入书架`);
-                    console.log(this.state.data);
                     this.setState({save:true});
-
-                    if(flag) {
-                        this.props.history.push({pathname: '/read/' + 0});
-                    }
                     return;
                 })
                 .catch(err=>{console.log(err)});
         }
-        this.deleteBook = ()=>{
-
+        this.readBook = ()=>{
+            this.addBook();
+            this.props.history.push({pathname: '/read/' + 0});
         }
-        this.shareSuccess =  () => {
-            Modal.success({
-                title: '链接已复制到你的剪贴板',
-                content: this.share
-            });
+        this.deleteBook = ()=>{
+            let localList = store.get('bookList');
+            let localIdList = store.get('bookIdList');
+            localList.shift();
+            localIdList.shift();
+            store.set('bookList',localList);
+            store.set('bookIdList',localIdList);
+            this.setState({save:false});
         }
     }
     componentDidMount(){
-        console.log(this.props);
         fetch(`/api/book/${this.props.match.params.id}`)
             .then(res=>res.json())
             .then(data=>{
@@ -87,9 +81,6 @@ class BookIntroduce extends React.Component{
                 this.setState({data:data,loading:false});
             })
             .catch(err=>console.log(err));
-    }
-    componentWillReceiveProps(nextProps){
-        this.share = `我在哦豁阅读器看《${this.data.title}》，绿色无广告，你也一起来呗！地址是${window.location.href}，移动端请手动复制这条信息。`;
     }
     handleImageErrored(e){
         e.target.src = errorLoading;
@@ -101,9 +92,6 @@ class BookIntroduce extends React.Component{
                 <Header className={styles.header}>
                     <Link to={'/search'}><Icon type="arrow-left" className={styles.pre} /></Link>
                     <span className={styles.title}>书籍详情</span>
-                    <CopyToClipboard text={this.share} onCopy={this.shareSuccess}>
-                        <span className={styles.share}>分享</span>
-                    </CopyToClipboard>
                 </Header>
                 <Spin className={styles.loading} spinning={this.state.loading} tip="书籍详情正在加载中...">
                     <Content className={styles.content}>
@@ -121,10 +109,10 @@ class BookIntroduce extends React.Component{
                                 <div className={styles.control}>
                                     {
                                         this.state.save ?
-                                            (<Button icon='minus' size='large' className={styles.cancel} onClick={this.deleteBook}>不追了</Button>) :
-                                            (<Button icon='plus' size='large' onClick={this.addBook(false)}>追更新</Button>)
+                                            (<Button icon='minus' size='large' className={styles.cancel} onClick={this.deleteBook}>移出书架</Button>) :
+                                            (<Button icon='plus' size='large' onClick={this.addBook}>加入书架</Button>)
                                     }
-                                    <Button icon='search' size='large' onClick={this.addBook(true)}>开始阅读</Button>
+                                    <Button icon='search' size='large' onClick={this.readBook}>开始阅读</Button>
                                 </div>
                                 <div className={styles.number}>
                                     <p><span>追书人数</span><br/>{this.state.data.latelyFollower}</p>
