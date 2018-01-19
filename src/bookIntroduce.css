@@ -1,0 +1,86 @@
+.header{
+    background-color: cadetblue; padding: 0px 20px;
+}
+.content {
+    background: white;
+    text-align: center;
+    padding: 20px;
+}
+.pre{
+    color:#fff;
+    font-size:1.1rem;
+}
+.title{
+    font-size: 1.1rem;
+    color: white;
+    margin-left: 20px;
+}
+.share{
+    margin-left:20px;
+    font-size:1.0rem;
+}
+.box{height:100px;padding: 10px 15px;}
+.box img{width:60px;height:80px;float:left;}
+.box p{margin-left:75px;text-align:left;height:80px;}
+.box p span{
+    white-space: nowrap;
+    width: 100%;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.box p .bookName{
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: rgb(89,89,89);
+    height: 30px;
+}
+.box p .bookMsg{
+    font-size:0.8rem;color:#ccc;
+}
+.box p .bookMsg em{color:rgb(202,94,39);font-weight:bold}
+.box p .updated{color:#ccc}
+.control{
+    padding: 10px 15px;
+    text-align:center;
+    /*display: flex;
+    justify-content: space-between;*/
+}
+.control button{
+    background-color: cadetblue !important;
+    color: white !important;
+    border: none !important;
+    width: 40%;
+    margin-right:10px;
+    padding: 10px 0;
+}
+.control .cancel{background-color: rgb(170,170,170) !important;}
+.number{
+    padding: 20px 35px;
+    border-top: 1px solid rgb(225,225,226);
+    border-bottom: 1px solid rgb(225,225,226);
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.number p span{color: rgb(127,127,127);}
+.tags{
+    padding: 10px 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    border-bottom: 1px solid rgb(225,225,226);
+}
+.tags .tag{
+    opacity: 0.6;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+.introduce{
+    padding: 20px 10px;
+    font-size: 0.8rem;
+}
